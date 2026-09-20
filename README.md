@@ -46,5 +46,5 @@ A continuación se detalla cada archivo incluido y las instrucciones para abrirl
 ##  Parámetros de Negocio Aplicados
 
 * **Semilla ($S$):** `666`
-* **Umbral de Monto ($U$):** $\$46\,000$ CLP 
+* **Umbral de Monto ($U$):** \$46\,000 CLP 
 * **Plazo Máximo ($D$):** $21$ días
