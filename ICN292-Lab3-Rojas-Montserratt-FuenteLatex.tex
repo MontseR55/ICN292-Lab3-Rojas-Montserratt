@@ -1,0 +1,283 @@
+% ------------------------------ %
+% PLANTILLA GESTIÓN ENERGÉTICA I %
+% ------------------------------ %
+
+\documentclass[11pt,letterpaper]{article}
+
+% --- CONFIGURACIÓN DE IDIOMA ---
+\usepackage[spanish,english]{babel}
+\addto\shorthandsspanish{\spanishdeactivate{~<>}}
+
+% --- CONFIGURACIÓN DE CODIFICACIÓN ---
+\usepackage[utf8]{inputenc} % Codificación de caracteres
+\usepackage{microtype} % Mejoras tipográficas
+\usepackage[T1]{fontenc} % Fuente optimizada
+\usepackage{lmodern} % Fuente moderna
+
+% --- PAQUETES GRÁFICOS ---
+\usepackage{graphicx} % Inserción de gráficos
+\usepackage{epstopdf} % Soporte para EPS
+\usepackage{epsfig} % Figuras EPS (opcional)
+
+% --- VARIABLES DE EQUIPO ---
+\newcommand{\theCampus}{Campus Vitacura}
+\newcommand{\theAssignment}{ICN292}
+\newcommand{\therevision}{MR}
+
+% --- PAQUETES ÚTILES ---
+\usepackage{booktabs} % Tablas profesionales
+\usepackage{array} % Tablas avanzadas
+\usepackage{paralist} % Listas compactas
+\usepackage{verbatim} % Texto literal
+\usepackage{subfigure} % Subfiguras
+
+% --- CONFIGURACIÓN DE FECHA ---
+\usepackage{datetime} % Gestión de fechas
+\newdateformat{monthyeardate}{\monthname[\THEMONTH], \THEYEAR}
+
+% --- GEOMETRÍA DE PÁGINA ---
+\usepackage[margin=25mm,inner=30mm]{geometry}
+
+% --- CABECERAS Y PIE DE PÁGINA ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\lhead{\includegraphics[scale=.15]{Logos/header_utfsm.png}}
+\cfoot{\textbf{\thepage}}
+\rfoot{\therevision}
+\lfoot{\theAssignment}
+\setlength{\headheight}{26.21176pt}
+\addtolength{\topmargin}{-14.21176pt}
+
+% --- ENLACES ---
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+
+% --- APARIENCIA DE TÍTULOS ---
+\usepackage{float} % Control de posiciones de elementos
+\usepackage[numbers]{natbib} % Referencias numéricas
+
+% --- TABLA DE CONTENIDOS ---
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Bibliografía en el índice
+\makeatletter
+\def\tableofcontents{
+ \newpage
+ \centerline{\large\scshape Tabla de Contenidos}
+ \vspace*{0.3in}
+ \@starttoc{toc}
+}
+\makeatother
+
+% --- OTROS PAQUETES ---
+\usepackage{lipsum} % Texto de relleno
+\usepackage[section]{placeins} % Control de flotantes
+
+% --- SANGÍA Y SALTOS DE PÁGINA ---
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+
+% -------------------- %
+% INICIO DEL DOCUMENTO %
+% -------------------- %
+\begin{document}
+\selectlanguage{spanish}
+
+% --- PORTADA ---
+\begin{titlepage}
+\begin{figure}[H]
+\includegraphics[width = 0.4\linewidth]{Logos/logo_di.png}
+\hspace{144pt}
+\vspace{-70pt}
+\end{figure}
+\vspace{60mm}
+\begin{center}
+\hrule
+\vspace{2mm}
+    {\Huge \textbf{\sc Laboratorio 3: Automatización de procesos con n8n}}\\
+{\Large \sc{Sistemas de información para la gestión ICN292}}
+\vspace{2mm}
+\hrule
+\vspace{1cm}
+
+% --- AUTORES ---
+{\textbf{Montserratt Rojas Araya} \\
+{\small 21497666-8, 202260583-9, paralelo 101, \emph{montserratt.rojas@usm.cl}}\\
+}
+
+\vfill
+\textsc{02/09/2026}\\[0.5cm]
+\textsc{\theCampus}
+\end{center}
+
+\clearpage
+
+\end{titlepage}
+
+% --- ÍNDICE ---
+\tableofcontents
+\clearpage
+
+% --- DOCUMENTO ---
+\section*{Resumen Ejecutivo}
+
+El presente trabajo abordó la automatización integral del proceso de recepción, evaluación y clasificación de solicitudes de devolución para un comercio electrónico mediante la plataforma de orquestación de flujos n8n. El objetivo central consistió en desacoplar la lógica operativa a través de flujos independientes: un flujo emisor para simular la carga transaccional, un flujo receptor de triage con reglas de negocio parametrizadas ($D=21$ días y $U=\$46.000$), enriquecimiento de datos en tiempo real mediante el consumo de la API pública de mindicador.cl para la conversión a Unidades de Fomento (UF), y la consolidación de métricas de proceso.
+
+\subsection{¿Qué se hizo?}
+\begin{itemize}
+    \item Flujo Triage (Receptor): Se configuró un endpoint HTTP (Webhook) en entorno productivo para recepcionar peticiones en formato JSON. Mediante un nodo Switch se estructuró un árbol de decisión para clasificar las órdenes en cuatro estados: Aprobación, Revisión, Rechazo y Datos Inválidos. Posteriormente, se enlazó una consulta externa vía HTTP Request a la API económica para obtener el valor del indicador UF del día y se consolidaron los campos de salida mediante un nodo de script (Code en JavaScript) para garantizar la integridad referencial de variables, retornando la respuesta final sincronizada al solicitante mediante Respond to Webhook.
+    \item Flujo Emisor (Simulación): Se implementó un generador programático en Python (Code) cargado con el lote de prueba estandarizado de 15 solicitudes. La transmisión se ejecutó mediante un nodo HTTP Request bajo método POST con serialización controlada de payload (JSON.stringify).
+    \item Flujo Resumen / Consolidación: Se estructuró el procesamiento y registro de las transacciones para su análisis global de desempeño operativo.
+\end{itemize}
+
+\subsection{Principales Conclusiones}
+\begin{itemize}
+    \item Desacoplamiento y Escalabilidad: La separación del flujo en microservicios mediante webhooks permite procesar lotes de forma asíncrona y confiable sin bloquear los sistemas origen.
+    \item Robustez ante Ramificaciones Condicionales: La resolución de variables dependientes de ramas no transitadas mediante lógica programática (try/catch o validación de ejecución) previene interrupciones en tiempo de ejecución (Node hasn't been executed), superando las limitaciones de nodos estáticos de asignación.
+    \item Enriquecimiento Dinámico de Datos: La incorporación de APIs externas en línea (mindicador.cl) permite estandarizar valorizaciones en unidades reajustables (UF) con total precisión temporal (registrando valores entre 0.24 UF y 7.08 UF en el lote analizado).
+\end{itemize}
+
+\subsection{Evidencias de Verificación}
+\begin{itemize}
+    \item Ejecuciones Exitosas: El lote completo de 15 ítems fue procesado satisfactoriamente por el flujo emisor (Workflow executed successfully), recibiendo de vuelta el 100% de las respuestas categorizadas (id_solicitud, sku, monto_clp, monto_uf, ruta, motivo y mensaje_cliente).
+    \item Ejecuciones Fallidas Identificadas y Subsanadas:
+    \begin{itemize}
+        \item Falla por invocación a webhook de prueba inactivo (404 Webhook not registered), solucionada mediante la publicación activa (Published) del endpoint de producción.
+        \item Error de serialización en el cliente emisor (Unexpected token '=', "=[object Object]"), resuelta mediante el casteo explícito con JSON.stringify(\$json).
+        \item Error de referencia de ramas condicionales en el nodo Registro y Notificacion, solventado sustituyendo la expresión dependiente por código JavaScript seguro.
+    \end{itemize}
+\end{itemize}
+
+\newpage
+% ==========================================
+% CUERPO PRINCIPAL DEL INFORME
+% ==========================================
+\section{Declaración parámetros y semilla personal}
+
+En conformidad con las instrucciones del laboratorio, se declara la semilla personal $S$ y los parámetros calculados para la parametrización de las reglas de negocio del flujo de \textit{triage}:
+
+\begin{itemize}
+    \item \textbf{Semilla personal ($S$):} $666$
+    \item \textbf{Umbral de monto ($U$):}
+    \[
+    U = 30\,000 + 1\,000 \times (S \pmod{50}) = 30\,000 + 1\,000 \times (666 \pmod{50})
+    \]
+    \[
+    U = 30\,000 + 1\,000 \times 16 = \mathbf{\$46\,000}
+    \]
+    \item \textbf{Plazo máximo ($D$):}
+    \[
+    D = 7 + 7 \times (S \pmod{4}) = 7 + 7 \times (666 \pmod{4})
+    \]
+    \[
+    D = 7 + 7 \times 2 = \mathbf{21\text{ días}}
+    \]
+\end{itemize}
+
+\noindent
+\textbf{Resumen de parámetros aplicados en n8n:}
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|c|l|}
+\hline
+\textbf{Parámetro} & \textbf{Valor} & \textbf{Criterio de Evaluación} \\ \hline
+Semilla ($S$) & $666$ & Identificador base \\ \hline
+Umbral de monto ($U$) & $\$46\,000$ & Revisión si $\text{monto} > 46\,000$ \\ \hline
+Plazo máximo ($D$) & $21$ días & Rechazo si $\text{días} > 21$ \\ \hline
+\end{tabular}
+\end{table}
+
+\section{URL n8n}
+
+https://montser55.app.n8n.cloud/webhook/177f2da9-671a-413e-856e-35879fbd8ddf
+
+\section{Arquitectura y Configuración de Flujos en n8n}
+
+Para cumplir con el desacoplamiento de servicios y automatizar el procesamiento de devoluciones, la solución se estructuró mediante flujos de trabajo independientes dentro de la plataforma \textbf{n8n}:
+
+\subsection{Flujo Receptor (\textit{Triage})}
+El flujo de \textit{Triage} constituye el núcleo de la lógica de negocio y opera de manera asíncrona mediante los siguientes nodos:
+\begin{enumerate}
+    \item \textbf{Webhook (Endpoint HTTP):} Expuesto mediante la URL de producción bajo el método \texttt{POST}. Recibe la carga útil (\textit{payload}) de la solicitud en formato JSON y delega la respuesta síncrona al nodo de cierre.
+    \item \textbf{Switch (Enrutador de Reglas de Negocio):} Clasifica cada registro entrante comparando sus atributos contra los parámetros personalizados ($S = 666$, $U = \$46\,000$, $D = 21$ días):
+    \begin{itemize}
+        \item \textbf{DATOS\_INVALIDOS:} Comprueba que los campos numéricos sean válidos y consistentes.
+        \item \textbf{RECHAZO:} Evalúa solicitudes fuera de plazo ($dias\_desde\_compra > 21$) o productos categorizados como \texttt{danado\_por\_uso}.
+        \item \textbf{REVISION:} Identifica solicitudes dentro de plazo pero con montos superiores al umbral ($monto > \$46\,000$) o productos con fallas técnicas (\texttt{con\_fallas}).
+        \item \textbf{APROBACION:} Solicitudes dentro de plazo, con monto menor o igual al umbral ($\le \$46\,000$) y producto en condición \texttt{sin\_abrir} o \texttt{abierto\_sin\_uso}.
+    \end{itemize}
+    \item \textbf{Consulta API UF (HTTP Request):} Realiza una petición \texttt{GET} al servicio REST público de \texttt{https://mindicador.cl/api}, obteniendo en tiempo de ejecución el valor oficial de la Unidad de Fomento (UF) para valorizar la devolución.
+    \item \textbf{Registro y Notificación (Code - JavaScript):} Script seguro que detecta qué nodo condicional fue ejecutado mediante control programático (\texttt{try/catch} sobre \texttt{isExecuted}), calculando el valor en UF ($monto\_clp / uf\_valor$) a dos decimales y consolidando el mensaje estandarizado para el cliente.
+    \item \textbf{Respond to Webhook:} Devuelve el objeto JSON consolidado con código de estado HTTP 200 al solicitante.
+\end{enumerate}
+
+\subsection{Flujo Emisor (\textit{Emitter})}
+Simula el despacho por lotes de las solicitudes de prueba hacia el Webhook de producción:
+\begin{enumerate}
+    \item \textbf{Trigger Manual (\textit{When clicking 'Execute workflow'}):} Inicia la corrida de pruebas de manera controlada.
+    \item \textbf{Code in Python:} Genera y estructura en memoria el lote de 15 solicitudes de devolución en formato diccionario, entregando 15 ítems individuales a la salida del nodo.
+    \item \textbf{HTTP Request:} Envía secuencialmente cada uno de los 15 registros hacia el endpoint del flujo de \textit{Triage} utilizando serialización explícita \texttt{\{\{ JSON.stringify(\$json) \}\}} en el cuerpo del mensaje.
+\end{enumerate}
+
+
+\begin{figure}[htbp]
+     \centering
+     \includegraphics[width=0.9\textwidth]{Imagenes/triage.png}
+     \caption{Lienzo general del flujo de Triage en n8n.}
+     \label{fig:triage_canvas}
+\end{figure}
+
+\begin{figure}[htbp]
+     \centering
+     \includegraphics[width=0.9\textwidth]{Imagenes/emisor.png}
+     \caption{Lienzo general del flujo de Emisor en n8n.}
+\end{figure}
+
+\begin{figure}[htbp]
+     \centering
+     \includegraphics[width=0.9\textwidth]{Imagenes/table.png}
+     \caption{Resultado del flujo de Emisor en n8n.}
+\end{figure}
+
+\section{Resultados y Verificación de Ejecución Exitosa}
+
+El flujo emisor completó satisfactoriamente la transmisión y recepción del lote completo de 15 solicitudes contra el flujo de \textit{Triage}. La Tabla~\ref{tab:resultados_15} presenta la respuesta devuelta por el sistema:
+
+\begin{table}[htbp]
+\centering
+\caption{Resultados consolidados de la ejecución de las 15 solicitudes de prueba.}
+\label{tab:resultados_15}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|c|r|r|l|l|}
+\hline
+\textbf{ID Solicitud} & \textbf{SKU} & \textbf{Monto (CLP)} & \textbf{Monto (UF)} & \textbf{Ruta} & \textbf{Motivo} \\ \hline
+DEV-1115 & AU-210 & \$19\,990 & 0.49 & APROBACION & Cumple política directa \\ \hline
+DEV-1116 & TE-330 & \$69\,980 & 1.71 & REVISION & Monto superior a umbral ($> \$46\,000$) \\ \hline
+DEV-1117 & HV-050 & \$24\,990 & 0.61 & REVISION & Producto con fallas \\ \hline
+DEV-1118 & MW-150 & \$79\,990 & 1.95 & REVISION & Monto superior a umbral ($> \$46\,000$) \\ \hline
+DEV-1119 & PL-120 & \$45\,990 & 1.12 & RECHAZO & Fuera de plazo ($25 > 21$ días) \\ \hline
+DEV-1120 & AS-260 & \$89\,990 & 2.20 & REVISION & Monto alto y producto con fallas \\ \hline
+DEV-1121 & LV-330 & \$289\,990 & 7.08 & REVISION & Monto superior a umbral ($> \$46\,000$) \\ \hline
+DEV-1122 & PL-120 & \$45\,990 & 1.12 & APROBACION & Cumple política directa \\ \hline
+DEV-1123 & AU-210 & \$39\,980 & 0.98 & RECHAZO & Producto dañado por uso \\ \hline
+DEV-1124 & HV-050 & \$49\,980 & 1.22 & REVISION & Monto superior a umbral ($> \$46\,000$) \\ \hline
+DEV-1125 & TE-330 & \$34\,990 & 0.85 & RECHAZO & Fuera de plazo ($22 > 21$ días) \\ \hline
+DEV-1126 & MW-150 & \$79\,990 & 1.95 & REVISION & Monto superior a umbral y fallas \\ \hline
+DEV-C01 & CB-010 & \$9\,990 & 0.24 & APROBACION & Caso de control: parámetros base \\ \hline
+DEV-C02 & LV-330 & \$289\,990 & 7.08 & REVISION & Caso de control: monto crítico \\ \hline
+DEV-C03 & MW-150 & \$79\,990 & 1.95 & RECHAZO & Caso de control: plazo excedido ($29 > 21$ días) \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+
+\section{Conclusiones}
+
+La experiencia práctica demostró la efectividad de las arquitecturas basadas en orquestación ligera para la automatización de procesos operacionales. Las principales lecciones aprendidas abarcan:
+\begin{itemize}
+    \item La importancia de la persistencia de endpoints productivos frente a entornos de prueba al interconectar flujos asíncronos.
+    \item La necesidad de utilizar programación defensiva mediante scripts al evaluar flujos con ramificaciones lógicas disjuntas.
+    \item La viabilidad de enriquecer flujos transaccionales en tiempo real mediante el consumo directo de microservicios REST externos sin degradación en el rendimiento.
+\end{itemize}
+
+
+\end{document}
