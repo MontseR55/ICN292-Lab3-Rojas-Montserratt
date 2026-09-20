@@ -16,7 +16,7 @@ Implementación de un sistema desacoplado en **n8n** para la recepción, evaluac
 
 A continuación se detalla cada archivo incluido y las instrucciones para abrirlo o reproducirlo:
 
-### 1. `ICN292-Lab3-Apellido-Nombre-triage.json` (Flujo Receptor)
+### 1. `ICN292-Lab3-Rojas-Montserratt-triage.json` (Flujo Receptor)
 * **Descripción:** Workflow en n8n que contiene el endpoint Webhook, la lógica de bifurcación condicional (`Switch`), la consulta a la API de UF (`mindicador.cl`) y la respuesta consolidada.
 * **Cómo reproducirlo:**
   1. Ingresar a la instancia de n8n.
@@ -24,20 +24,20 @@ A continuación se detalla cada archivo incluido y las instrucciones para abrirl
   3. Seleccionar este archivo `.json`.
   4. Publicar el workflow (**Publish**) para activar el Webhook de producción permanente.
 
-### 2. `ICN292-Lab3-Apellido-Nombre-emisor.json` (Flujo Emisor)
+### 2. `ICN292-Lab3-Rojas-Montserratt-emisor.json` (Flujo Emisor)
 * **Descripción:** Workflow en n8n con disparador manual, bloque de código Python para estructurar las 15 solicitudes de prueba y nodo HTTP Request para su envío por lotes.
 * **Cómo reproducirlo:**
   1. Importar el archivo `.json` en n8n siguiendo el mismo procedimiento anterior.
   2. Abrir el nodo **HTTP Request** y verificar que la URL apunte al Webhook de producción del flujo de triage.
   3. Hacer clic en **Execute workflow** para enviar los 15 registros y visualizar las respuestas en el panel `OUTPUT` en vista tabla o JSON.
 
-### 3. `ICN292-Lab3-Apellido-Nombre-resumen.json` (Flujo Resumen)
+### 3. `ICN292-Lab3-Rojas-Montserratt-resumen.json` (Flujo Resumen)
 * **Descripción:** Workflow en n8n encargado de recopilar, estructurar o exportar las métricas consolidadas del lote de devoluciones evaluadas.
 * **Cómo reproducirlo:**
   1. Importar el archivo `.json` en n8n mediante **Import from File**.
   2. Ejecutar el flujo de manera manual o conectada a los resultados para procesar el consolidado.
 
-### 4. `ICN292-Lab3-Apellido-Nombre.pdf` (Informe Técnico)
+### 4. `ICN292-Lab3-Rojas-Montserratt.pdf` (Informe Técnico)
 * **Descripción:** Informe final que incluye resumen ejecutivo de una página, análisis de arquitectura, parámetros de la semilla personal, evidencia de ejecuciones fallidas/exitosas y tabla con los 15 resultados procesados.
 * **Cómo abrirlo:** Visualizar con cualquier visor de archivos PDF estándar (Adobe Acrobat, navegador web o visor de sistema operativo).
 
@@ -46,5 +46,5 @@ A continuación se detalla cada archivo incluido y las instrucciones para abrirl
 ##  Parámetros de Negocio Aplicados
 
 * **Semilla ($S$):** `666`
-* **Umbral de Monto ($U$):** $\$46\,000$ CLP ($U = 30000 + 1000 \times (666 \pmod{50})$)
+* **Umbral de Monto ($U$):** $\$46\,000$ CLP 
 * **Plazo Máximo ($D$):** $21$ días
