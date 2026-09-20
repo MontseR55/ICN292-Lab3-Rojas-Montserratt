@@ -1,0 +1,85 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7ec2124f-cd9e-4e90-8e86-ec34669d2e36",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "solicitudes = [\n    { \"id_solicitud\": \"DEV-1115\", \"sku\": \"AU-210\", \"unidades\": \"1\", \"monto\": \"19990\", \"dias_desde_compra\": \"3\", \"estado_producto\": \"sin_abrir\", \"email_cliente\": \"cliente1@example.cl\" },\n    { \"id_solicitud\": \"DEV-1116\", \"sku\": \"TE-330\", \"unidades\": \"2\", \"monto\": \"69980\", \"dias_desde_compra\": \"5\", \"estado_producto\": \"abierto_sin_uso\", \"email_cliente\": \"cliente2@example.cl\" },\n    { \"id_solicitud\": \"DEV-1117\", \"sku\": \"HV-050\", \"unidades\": \"1\", \"monto\": \"24990\", \"dias_desde_compra\": \"12\", \"estado_producto\": \"con_fallas\", \"email_cliente\": \"cliente3@example.cl\" },\n    { \"id_solicitud\": \"DEV-1118\", \"sku\": \"MW-150\", \"unidades\": \"1\", \"monto\": \"79990\", \"dias_desde_compra\": \"4\", \"estado_producto\": \"sin_abrir\", \"email_cliente\": \"cliente4@example.cl\" },\n    { \"id_solicitud\": \"DEV-1119\", \"sku\": \"PL-120\", \"unidades\": \"1\", \"monto\": \"45990\", \"dias_desde_compra\": \"25\", \"estado_producto\": \"danado_por_uso\", \"email_cliente\": \"cliente5@example.cl\" },\n    { \"id_solicitud\": \"DEV-1120\", \"sku\": \"AS-260\", \"unidades\": \"1\", \"monto\": \"89990\", \"dias_desde_compra\": \"2\", \"estado_producto\": \"con_fallas\", \"email_cliente\": \"cliente6@example.cl\" },\n    { \"id_solicitud\": \"DEV-1121\", \"sku\": \"LV-330\", \"unidades\": \"1\", \"monto\": \"289990\", \"dias_desde_compra\": \"9\", \"estado_producto\": \"sin_abrir\", \"email_cliente\": \"cliente7@example.cl\" },\n    { \"id_solicitud\": \"DEV-1122\", \"sku\": \"PL-120\", \"unidades\": \"1\", \"monto\": \"45990\", \"dias_desde_compra\": \"2\", \"estado_producto\": \"sin_abrir\", \"email_cliente\": \"cliente8@example.cl\" },\n    { \"id_solicitud\": \"DEV-1123\", \"sku\": \"AU-210\", \"unidades\": \"2\", \"monto\": \"39980\", \"dias_desde_compra\": \"15\", \"estado_producto\": \"danado_por_uso\", \"email_cliente\": \"cliente9@example.cl\" },\n    { \"id_solicitud\": \"DEV-1124\", \"sku\": \"HV-050\", \"unidades\": \"2\", \"monto\": \"49980\", \"dias_desde_compra\": \"1\", \"estado_producto\": \"abierto_sin_uso\", \"email_cliente\": \"cliente10@example.cl\" },\n    { \"id_solicitud\": \"DEV-1125\", \"sku\": \"TE-330\", \"unidades\": \"1\", \"monto\": \"34990\", \"dias_desde_compra\": \"22\", \"estado_producto\": \"sin_abrir\", \"email_cliente\": \"cliente11@example.cl\" },\n    { \"id_solicitud\": \"DEV-1126\", \"sku\": \"MW-150\", \"unidades\": \"1\", \"monto\": \"79990\", \"dias_desde_compra\": \"8\", \"estado_producto\": \"con_fallas\", \"email_cliente\": \"cliente12@example.cl\" },\n    { \"id_solicitud\": \"DEV-C01\", \"sku\": \"CB-010\", \"unidades\": \"1\", \"monto\": \"9990\", \"dias_desde_compra\": \"1\", \"estado_producto\": \"sin_abrir\", \"email_cliente\": \"control01@example.cl\" },\n    { \"id_solicitud\": \"DEV-C02\", \"sku\": \"LV-330\", \"unidades\": \"1\", \"monto\": \"289990\", \"dias_desde_compra\": \"2\", \"estado_producto\": \"sin_abrir\", \"email_cliente\": \"control02@example.cl\" },\n    { \"id_solicitud\": \"DEV-C03\", \"sku\": \"MW-150\", \"unidades\": \"1\", \"monto\": \"79990\", \"dias_desde_compra\": \"29\", \"estado_producto\": \"abierto_sin_uso\", \"email_cliente\": \"control03@example.cl\" }\n]\n\nreturn [{\"json\": s} for s in solicitudes]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "6c694c49-0e47-43ed-be2c-340bc60eda33",
+      "name": "Code in Python"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://montser55.app.n8n.cloud/webhook/177f2da9-671a-413e-856e-35879fbd8ddf",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        448,
+        0
+      ],
+      "id": "5f4e1266-42f1-48e2-aac8-8a54f299db0b",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Code in Python",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "222184fe-227e-4f02-8aef-2ef9a8850860",
+  "meta": {
+    "instanceId": "9490f917f3fe5aa35cfcff0e6a2885231e892115aa7288e6951fbaa2c2a92519"
+  },
+  "nodeGroups": [],
+  "id": "XOutfSNEollvvCb5",
+  "tags": []
+}
