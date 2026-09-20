@@ -1,45 +1,50 @@
 # ICN292 - Laboratorio 3: Automatización y Triage de Devoluciones en n8n
 
-Este repositorio contiene la implementación y los artefactos técnicos del **Laboratorio 3** para el curso ICN292 (Sistemas de Información / Automatización de Procesos). El proyecto implementa un sistema desacoplado de recepción, clasificación y evaluación automatizada de solicitudes de devolución de productos utilizando la plataforma de orquestación **n8n**.
+* **Nombre:** Montserratt Rojas
+* **RUT:** 214976669 (Semilla $S = 666$)
+* **Fecha:** 19 de septiembre 2026
 
 ---
 
-##  Descripción del Proyecto
+## 📌 Descripción del Proyecto
 
-El sistema evalúa solicitudes transaccionales contra reglas de negocio parametrizadas ($D=21$ días de plazo máximo y umbral económico $U=\$46\,000$), enriqueciendo cada transacción mediante la consulta en tiempo real al indicador económico oficial de la Unidad de Fomento (UF) a través del servicio REST de `mindicador.cl`.
-
-### Arquitectura de la Solución
-El sistema se compone de flujos independientes:
-1. **Flujo Receptor (`triage`):**
-   * **Webhook:** Expuesto en entorno de producción mediante método `POST`.
-   * **Switch:** Clasificación condicional en 4 rutas: `APROBACION`, `REVISION`, `RECHAZO` y `DATOS_INVALIDOS`.
-   * **Consulta API UF:** Consumo dinámico de `https://mindicador.cl/api` vía HTTP `GET`.
-   * **Registro y Notificación (JavaScript):** Consolidación programática tolerante a bifurcaciones no ejecutadas y cálculo de montos en UF.
-   * **Respond to Webhook:** Emisión síncrona de la respuesta en formato JSON.
-2. **Flujo Emisor (`emisor`):**
-   * **Trigger manual:** Disparo bajo demanda.
-   * **Code in Python:** Generación estructurada de 15 solicitudes de devolución para pruebas de carga y casos de borde.
-   * **HTTP Request:** Despacho con serialización JSON (`{{ JSON.stringify($json) }}`) hacia el endpoint productivo.
-3. **Flujo Resumen (`resumen`):**
-   * Consolidación y procesamiento de métricas agregadas del lote transaccional.
+Implementación de un sistema desacoplado en **n8n** para la recepción, evaluación y clasificación automatizada de solicitudes de devolución de productos en base a reglas de negocio parametrizadas ($D = 21$ días y umbral $U = \$46\,000$) y valorización en tiempo real en Unidades de Fomento (UF) mediante la API de `mindicador.cl`.
 
 ---
 
-##  Parámetros de Negocio Aplicados
+## 📂 Archivos del Repositorio y Guía de Reproducción
 
-En base a la semilla personal $S = 666$:
+A continuación se detalla cada archivo incluido y las instrucciones para abrirlo o reproducirlo:
+
+### 1. `ICN292-Lab3-Apellido-Nombre-triage.json` (Flujo Receptor)
+* **Descripción:** Workflow en n8n que contiene el endpoint Webhook, la lógica de bifurcación condicional (`Switch`), la consulta a la API de UF (`mindicador.cl`) y la respuesta consolidada.
+* **Cómo reproducirlo:**
+  1. Ingresar a la instancia de n8n.
+  2. En el menú superior de Workflows, hacer clic en los tres puntos (`...`) y seleccionar **Import from File**.
+  3. Seleccionar este archivo `.json`.
+  4. Publicar el workflow (**Publish**) para activar el Webhook de producción permanente.
+
+### 2. `ICN292-Lab3-Apellido-Nombre-emisor.json` (Flujo Emisor)
+* **Descripción:** Workflow en n8n con disparador manual, bloque de código Python para estructurar las 15 solicitudes de prueba y nodo HTTP Request para su envío por lotes.
+* **Cómo reproducirlo:**
+  1. Importar el archivo `.json` en n8n siguiendo el mismo procedimiento anterior.
+  2. Abrir el nodo **HTTP Request** y verificar que la URL apunte al Webhook de producción del flujo de triage.
+  3. Hacer clic en **Execute workflow** para enviar los 15 registros y visualizar las respuestas en el panel `OUTPUT` en vista tabla o JSON.
+
+### 3. `ICN292-Lab3-Apellido-Nombre-resumen.json` (Flujo Resumen)
+* **Descripción:** Workflow en n8n encargado de recopilar, estructurar o exportar las métricas consolidadas del lote de devoluciones evaluadas.
+* **Cómo reproducirlo:**
+  1. Importar el archivo `.json` en n8n mediante **Import from File**.
+  2. Ejecutar el flujo de manera manual o conectada a los resultados para procesar el consolidado.
+
+### 4. `ICN292-Lab3-Apellido-Nombre.pdf` (Informe Técnico)
+* **Descripción:** Informe final que incluye resumen ejecutivo de una página, análisis de arquitectura, parámetros de la semilla personal, evidencia de ejecuciones fallidas/exitosas y tabla con los 15 resultados procesados.
+* **Cómo abrirlo:** Visualizar con cualquier visor de archivos PDF estándar (Adobe Acrobat, navegador web o visor de sistema operativo).
+
+---
+
+## ⚙️ Parámetros de Negocio Aplicados
+
 * **Semilla ($S$):** `666`
-* **Umbral de Monto ($U$):** $\$46\,000$ CLP ($30000 + 1000 \times (666 \pmod{50})$)
-* **Plazo Máximo ($D$):** $21$ días ($7 + 7 \times (S \dots)$)
-
----
-
-##  Estructura de Archivos
-
-```text
-├── ICN292-Lab3-Apellido-Nombre-triage.json     # Workflow exportado de Triage (Receptor)
-├── ICN292-Lab3-Apellido-Nombre-emisor.json     # Workflow exportado de Emisor de pruebas
-├── ICN292-Lab3-Apellido-Nombre-resumen.json    # Workflow exportado de Resumen/Consolidación
-├── ICN292-Lab3-Apellido-Nombre.pdf             # Informe técnico final con Resumen Ejecutivo
-├── screenshots/                                # Evidencias de ejecuciones (exitosas y fallidas)
-└── README.md                                   # Documentación del repositorio
+* **Umbral de Monto ($U$):** $\$46\,000$ CLP ($U = 30000 + 1000 \times (666 \pmod{50})$)
+* **Plazo Máximo ($D$):** $21$ días
