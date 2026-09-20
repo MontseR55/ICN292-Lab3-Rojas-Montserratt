@@ -1,7 +1,7 @@
 # ICN292 - Laboratorio 3: Automatización y Triage de Devoluciones en n8n
 
 * **Nombre:** Montserratt Rojas
-* **RUT:** 214976669 (Semilla $S = 666$)
+* **RUT:** 21497666 (Semilla $S = 666$)
 * **Fecha:** 20 de septiembre 2026
 
 ---
