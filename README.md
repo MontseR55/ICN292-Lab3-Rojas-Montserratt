@@ -6,13 +6,13 @@
 
 ---
 
-## 📌 Descripción del Proyecto
+##  Descripción del Proyecto
 
 Implementación de un sistema desacoplado en **n8n** para la recepción, evaluación y clasificación automatizada de solicitudes de devolución de productos en base a reglas de negocio parametrizadas ($D = 21$ días y umbral $U = \$46\,000$) y valorización en tiempo real en Unidades de Fomento (UF) mediante la API de `mindicador.cl`.
 
 ---
 
-## 📂 Archivos del Repositorio y Guía de Reproducción
+##  Archivos del Repositorio y Guía de Reproducción
 
 A continuación se detalla cada archivo incluido y las instrucciones para abrirlo o reproducirlo:
 
@@ -43,7 +43,7 @@ A continuación se detalla cada archivo incluido y las instrucciones para abrirl
 
 ---
 
-## ⚙️ Parámetros de Negocio Aplicados
+##  Parámetros de Negocio Aplicados
 
 * **Semilla ($S$):** `666`
 * **Umbral de Monto ($U$):** $\$46\,000$ CLP ($U = 30000 + 1000 \times (666 \pmod{50})$)
