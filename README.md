@@ -31,13 +31,8 @@ A continuación se detalla cada archivo incluido y las instrucciones para abrirl
   2. Abrir el nodo **HTTP Request** y verificar que la URL apunte al Webhook de producción del flujo de triage.
   3. Hacer clic en **Execute workflow** para enviar los 15 registros y visualizar las respuestas en el panel `OUTPUT` en vista tabla o JSON.
 
-### 3. `ICN292-Lab3-Rojas-Montserratt-resumen.json` (Flujo Resumen)
-* **Descripción:** Workflow en n8n encargado de recopilar, estructurar o exportar las métricas consolidadas del lote de devoluciones evaluadas.
-* **Cómo reproducirlo:**
-  1. Importar el archivo `.json` en n8n mediante **Import from File**.
-  2. Ejecutar el flujo de manera manual o conectada a los resultados para procesar el consolidado.
 
-### 4. `ICN292-Lab3-Rojas-Montserratt.pdf` (Informe Técnico)
+### 3. `ICN292-Lab3-Rojas-Montserratt.pdf` (Informe Técnico)
 * **Descripción:** Informe final que incluye resumen ejecutivo de una página, análisis de arquitectura, parámetros de la semilla personal, evidencia de ejecuciones fallidas/exitosas y tabla con los 15 resultados procesados.
 * **Cómo abrirlo:** Visualizar con cualquier visor de archivos PDF estándar (Adobe Acrobat, navegador web o visor de sistema operativo).
 
