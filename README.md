@@ -2,7 +2,7 @@
 
 * **Nombre:** Montserratt Rojas
 * **RUT:** 214976669 (Semilla $S = 666$)
-* **Fecha:** 19 de septiembre 2026
+* **Fecha:** 20 de septiembre 2026
 
 ---
 
